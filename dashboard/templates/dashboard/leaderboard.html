@@ -1,0 +1,35 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Leader Board — Gamio{% endblock %}
+{% block content %}
+{% include "dashboard/partials/app_header.html" with active="leaderboard" %}
+<div class="card" style="border-top:none; border-radius:0 0 var(--radius) var(--radius); padding:24px;">
+  <h2 class="page-title">Leader Board</h2>
+
+  <form method="get" class="grade-filter">
+    <label for="gradeSelect">Grade level</label>
+    <select id="gradeSelect" name="grade" onchange="this.form.submit()">
+      {% for value, label in grade_levels %}
+        <option value="{{ value }}" {% if value == current_grade %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </form>
+
+  <div class="grade-filter-panel">
+    <table>
+      <thead><tr><th style="width:40px;">#</th><th>Student</th><th style="text-align:right;">Points</th><th style="text-align:right;">Badges</th></tr></thead>
+      <tbody>
+      {% for s in rows %}
+        <tr class="rank-row {% if forloop.first %}gold{% endif %}">
+          <td>{{ forloop.counter }}</td>
+          <td><span class="avatar" style="background:{{ s.color_hex }}">{{ s.name|slice:":2"|upper }}</span>{{ s.name }}</td>
+          <td style="text-align:right; font-weight:800;">{{ s.points }}</td>
+          <td style="text-align:right;">{{ s.badges }} 🏅</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="4" class="muted" style="text-align:center; padding:22px;">No students in {{ current_grade }} yet.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
